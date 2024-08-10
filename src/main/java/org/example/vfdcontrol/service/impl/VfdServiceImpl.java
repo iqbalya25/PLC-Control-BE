@@ -17,8 +17,8 @@ import java.io.IOException;
 public class VfdServiceImpl implements VfdService {
     private static final Logger logger = LoggerFactory.getLogger(VfdServiceImpl.class);
     private SerialConnection connection;
-    private static final int MODBUS_DELAY = 500; // 100ms delay
-    private static final int SLAVE_ADDRESS = 1;
+    private static final int MODBUS_DELAY = 500;
+    private static final int SLAVE_ADDRESS= 1;
 
     public VfdServiceImpl() {
         SerialParameters params = new SerialParameters();

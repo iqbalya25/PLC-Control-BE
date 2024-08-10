@@ -1,6 +1,5 @@
 package org.example.vfdcontrol.controller;
 
-
 import jdk.jfr.Frequency;
 import org.example.vfdcontrol.dto.CommandRequestDTO;
 import org.example.vfdcontrol.dto.FrequencyRequestDTO;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/vfdcontrol")
+@CrossOrigin(origins = "http://localhost:3000")
 public class VfdController {
     private final VfdService vfdService;
 
