@@ -22,7 +22,7 @@ public class VfdServiceImpl implements VfdService {
 
     public VfdServiceImpl() {
         SerialParameters params = new SerialParameters();
-        params.setPortName("COM9");
+        params.setPortName("COM10");
         params.setBaudRate(9600);
         params.setDatabits(8);
         params.setParity(2);  // Even parity
