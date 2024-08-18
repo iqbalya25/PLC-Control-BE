@@ -6,4 +6,6 @@ public interface VfdService {
     void turnOn() throws IOException;
     void turnOff() throws IOException;
     boolean getLampStatus() throws IOException;
+    void publishStatus();
+    void handleMqttCommand(String command);
 }

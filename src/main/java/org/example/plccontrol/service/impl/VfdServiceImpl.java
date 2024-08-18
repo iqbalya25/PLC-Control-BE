@@ -7,6 +7,10 @@ import com.ghgande.j2mod.modbus.net.TCPMasterConnection;
 import org.example.plccontrol.service.VfdService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
+import org.springframework.integration.mqtt.support.MqttHeaders;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -21,30 +25,35 @@ public class VfdServiceImpl implements VfdService {
     private static final int BUTTON_ON_COIL = 3072;
     private static final int BUTTON_OFF_COIL = 3073;
     private static final int LAMP_STATUS_REGISTER = 1536;
-    private static final int PULSE_DURATION_MS = 100; // Duration of the momentary pulse
+    private static final int PULSE_DURATION_MS = 100;
 
-    private TCPMasterConnection connection;
+    private final TCPMasterConnection connection;
+    private final MqttPahoMessageHandler mqttOutbound;
 
-    public VfdServiceImpl() {
+    public VfdServiceImpl(MqttPahoMessageHandler mqttOutbound) {
+        this.mqttOutbound = mqttOutbound;
         try {
             InetAddress addr = InetAddress.getByName(IP_ADDRESS);
-            connection = new TCPMasterConnection(addr);
+            this.connection = new TCPMasterConnection(addr);
             connection.setPort(PORT);
             connection.connect();
             logger.info("Successfully connected to Modbus device at {}:{}", IP_ADDRESS, PORT);
         } catch (Exception e) {
             logger.error("Failed to initialize Modbus connection", e);
+            throw new RuntimeException("Failed to initialize Modbus connection", e);
         }
     }
 
     @Override
     public void turnOn() throws IOException {
         sendMomentaryPulse(BUTTON_ON_COIL);
+        publishStatus();
     }
 
     @Override
     public void turnOff() throws IOException {
         sendMomentaryPulse(BUTTON_OFF_COIL);
+        publishStatus();
     }
 
     @Override
@@ -52,17 +61,42 @@ public class VfdServiceImpl implements VfdService {
         return readCoil(LAMP_STATUS_REGISTER);
     }
 
+    @Override
+    public void publishStatus() {
+        try {
+            boolean status = getLampStatus();
+            String payload = status ? "ON" : "OFF";
+            Message<String> message = MessageBuilder
+                    .withPayload(payload)
+                    .setHeader(MqttHeaders.TOPIC, "vfd/status")
+                    .build();
+            mqttOutbound.handleMessage(message);
+            logger.info("Published VFD status: {}", payload);
+        } catch (IOException e) {
+            logger.error("Error publishing VFD status", e);
+        }
+    }
+
+    @Override
+    public void handleMqttCommand(String command) {
+        try {
+            if ("ON".equalsIgnoreCase(command)) {
+                turnOn();
+            } else if ("OFF".equalsIgnoreCase(command)) {
+                turnOff();
+            } else {
+                logger.warn("Received unknown command: {}", command);
+            }
+        } catch (IOException e) {
+            logger.error("Error handling MQTT command", e);
+        }
+    }
+
     private void sendMomentaryPulse(int coil) throws IOException {
         try {
-            // Turn the coil ON
             writeCoil(coil, true);
-
-            // Wait for the pulse duration
             Thread.sleep(PULSE_DURATION_MS);
-
-            // Turn the coil OFF
             writeCoil(coil, false);
-
             logger.info("Successfully sent momentary pulse to coil {}", coil);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
