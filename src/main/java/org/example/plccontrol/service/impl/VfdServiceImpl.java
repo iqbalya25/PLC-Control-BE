@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
@@ -28,10 +29,10 @@ public class VfdServiceImpl implements VfdService {
     private static final int PULSE_DURATION_MS = 100;
 
     private final TCPMasterConnection connection;
-    private final MqttPahoMessageHandler mqttOutbound;
+    private final MessageChannel mqttOutboundChannel;
 
-    public VfdServiceImpl(MqttPahoMessageHandler mqttOutbound) {
-        this.mqttOutbound = mqttOutbound;
+    public VfdServiceImpl(MessageChannel mqttOutboundChannel) {
+        this.mqttOutboundChannel = mqttOutboundChannel;
         try {
             InetAddress addr = InetAddress.getByName(IP_ADDRESS);
             this.connection = new TCPMasterConnection(addr);
@@ -70,7 +71,7 @@ public class VfdServiceImpl implements VfdService {
                     .withPayload(payload)
                     .setHeader(MqttHeaders.TOPIC, "vfd/status")
                     .build();
-            mqttOutbound.handleMessage(message);
+            mqttOutboundChannel.send(message);
             logger.info("Published VFD status: {}", payload);
         } catch (IOException e) {
             logger.error("Error publishing VFD status", e);
