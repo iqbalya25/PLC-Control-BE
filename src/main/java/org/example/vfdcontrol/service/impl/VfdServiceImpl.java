@@ -49,8 +49,7 @@ public class VfdServiceImpl implements VfdService {
 
     @Override
     public boolean getLampStatus() throws IOException {
-        int status = readRegister(LAMP_STATUS_REGISTER);
-        return status == 1;
+        return readCoil(LAMP_STATUS_REGISTER);
     }
 
     private void sendMomentaryPulse(int coil) throws IOException {
@@ -90,24 +89,24 @@ public class VfdServiceImpl implements VfdService {
         }
     }
 
-    private int readRegister(int register) throws IOException {
+    private boolean readCoil(int coil) throws IOException {
         try {
             if (!connection.isConnected()) {
                 connection.connect();
             }
-            ReadMultipleRegistersRequest req = new ReadMultipleRegistersRequest(register, 1);
+            ReadCoilsRequest req = new ReadCoilsRequest(coil, 1);
             req.setUnitID(SLAVE_ID);
             ModbusResponse response = executeTransaction(req);
-            if (response instanceof ReadMultipleRegistersResponse) {
-                ReadMultipleRegistersResponse readResponse = (ReadMultipleRegistersResponse) response;
-                int value = readResponse.getRegisterValue(0);
-                logger.info("Successfully read from register {}: {}", register, value);
-                return value;
+            if (response instanceof ReadCoilsResponse) {
+                ReadCoilsResponse readResponse = (ReadCoilsResponse) response;
+                boolean state = readResponse.getCoilStatus(0);
+                logger.info("Successfully read from coil {}: {}", coil, state);
+                return state;
             }
             throw new IOException("Unexpected response type");
         } catch (Exception e) {
-            logger.error("Error reading from register {}", register, e);
-            throw new IOException("Failed to read from register", e);
+            logger.error("Error reading from coil {}", coil, e);
+            throw new IOException("Failed to read from coil", e);
         }
     }
 
