@@ -1,4 +1,4 @@
-package org.example.vfdcontrol.dto;
+package org.example.plccontrol.dto;
 
 public class CommandRequestDTO {
     private String command;

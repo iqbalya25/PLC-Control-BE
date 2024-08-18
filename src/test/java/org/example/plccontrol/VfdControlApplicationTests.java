@@ -1,4 +1,4 @@
-package org.example.vfdcontrol;
+package org.example.plccontrol;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package org.example.vfdcontrol.config;
+package org.example.plccontrol.config;
 
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

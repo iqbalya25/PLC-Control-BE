@@ -1,4 +1,4 @@
-package org.example.vfdcontrol;
+package org.example.plccontrol;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,10 +1,10 @@
-package org.example.vfdcontrol.service.impl;
+package org.example.plccontrol.service.impl;
 
 import com.ghgande.j2mod.modbus.ModbusException;
 import com.ghgande.j2mod.modbus.io.ModbusTCPTransaction;
 import com.ghgande.j2mod.modbus.msg.*;
 import com.ghgande.j2mod.modbus.net.TCPMasterConnection;
-import org.example.vfdcontrol.service.VfdService;
+import org.example.plccontrol.service.VfdService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

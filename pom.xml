@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.example</groupId>
-    <artifactId>VfdControl</artifactId>
+    <artifactId>plccontrol</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>VfdControl</name>
     <description>VfdControl</description>

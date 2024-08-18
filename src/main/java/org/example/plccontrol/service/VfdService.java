@@ -1,4 +1,4 @@
-package org.example.vfdcontrol.service;
+package org.example.plccontrol.service;
 
 import java.io.IOException;
 

@@ -1,7 +1,6 @@
-package org.example.vfdcontrol.dto;
+package org.example.plccontrol.dto;
 
 public class ModbusTcpDTO {
-
     public static class LampStatusResponse {
         private boolean isOn;
 
@@ -17,6 +16,4 @@ public class ModbusTcpDTO {
             isOn = on;
         }
     }
-
-    // You can add more DTOs here if needed
 }

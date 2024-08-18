@@ -1,8 +1,8 @@
-package org.example.vfdcontrol.controller;
+package org.example.plccontrol.controller;
 
-import org.example.vfdcontrol.dto.CommandRequestDTO;
-import org.example.vfdcontrol.dto.ModbusTcpDTO;
-import org.example.vfdcontrol.service.VfdService;
+import org.example.plccontrol.dto.CommandRequestDTO;
+import org.example.plccontrol.dto.ModbusTcpDTO;
+import org.example.plccontrol.service.VfdService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +35,7 @@ public class VfdController {
         }
     }
 
-    @GetMapping("/status")
+    @GetMapping("/lampstatus")
     public ResponseEntity<ModbusTcpDTO.LampStatusResponse> getLampStatus() {
         try {
             boolean status = vfdService.getLampStatus();
